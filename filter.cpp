@@ -11,11 +11,11 @@ void filter::loadInputData(std::vector<double> *b1, std::vector<double> *a1, std
     this->zi = z1;
 }
 
-void filter::getFirstOutput(){
+std::vector<double> * filter::getFirstOutput(){
     return &output1;
 }
 
-void filter::getSecondOutput(){
+std::vector<double> * filter::getSecondOutput(){
     return &output2;
 }
 
