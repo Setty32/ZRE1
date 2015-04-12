@@ -1,7 +1,6 @@
 #include "synthesize.h"
 /*  public:
     synthesize();
-    synthetize(vector<vector<double>> &predictor_coeffs, vector<double> &gains, vector<double> &lags, unsigned predictor_order, unsigned window_length);
     ~synthesize();
 
     unsigned get_predictor_order();
@@ -16,8 +15,6 @@
     void set_predictor_coeffs(vector<vector<double>> &predictor_coeffs);
     vector<double> &get_result();
 
-    void run();
-
   private:
     vector<double> &lags;
     vector<double> &gains;
@@ -30,16 +27,16 @@
     void check();
 */
 
-synthetize::synthetize(vector<vector<double>> &predictor_coeffs, vector<double> &gains, vector<double> &lags, unsigned predictor_order, unsigned window_length)
+synthesize::synthesize(vector<vector<double>> &predictor_coeffs, vector<double> &gains, vector<double> &lags, unsigned predictor_order, unsigned window_length)
 {
-  this.window_length    = window_length;
-  this.predictor_order  = predictor_order;
-  this.predictor_coeffs = predictor_coeffs;
-  this.gains            = gains;
-  this.lags             = lags;
+  this->window_length    = window_length;
+  this->predictor_order  = predictor_order;
+  this->predictor_coeffs = predictor_coeffs;
+  this->gains            = gains;
+  this->lags             = lags;
 }
 
-void synthetize::run()
+void synthesize::run()
 {
   unsigned nextvoiced = 1;
   unsigned power = 0;
@@ -61,7 +58,7 @@ void synthetize::run()
       for (unsigned j = lags[i]; j <= window_length; j += lags[i])
         where.push_back(j);
 
-      nextvoiced = where.back() + lags[i] - window_size; 
+      nextvoiced = where.back() + lags[i] - window_length; 
 
       fill(excit.begin(), excit.end(), 0.0);
       for (vector<unsigned>::iterator it = where.begin(); it != where.end(); ++it)
@@ -69,16 +66,24 @@ void synthetize::run()
     }
 
     power = 0;
-    for (vector<unsigned>::iterator it = excit.begin(); it != excit.end(); ++it)
+    for (vector<double>::iterator it = excit.begin(); it != excit.end(); ++it)
       power += *it**it;
     power = sqrt(power/window_length); 
-    for (vector<unsigned>::iterator it = excit.begin(); it != excit.end(); ++it)
+    for (vector<double>::iterator it = excit.begin(); it != excit.end(); ++it)
       *it = *it / power;
 
-    filter
+    vector<double> tmp;
+    tmp.push_back(gains[i]);
+    filter f;
+    f.loadInputData(&tmp, &coeffs, &excit, &init);
+    f.doFilter();
+    
+    vector<double> *tmp_ptr = f.getFirstOutput();
+    for (vector<double>::iterator it = tmp_ptr->begin(); it != tmp_ptr->end(); ++it)
+      result.push_back(*it);
 
-    appendToResult
-    copyOverToInit
+    tmp_ptr = f.getSecondOutput();
+    init.swap(*tmp_ptr);
 
     excit.clear();
   }
@@ -89,7 +94,7 @@ void synthetize::run()
 
 }*/
 
-vector<double> &synthetize::get_result()
+vector<double> &synthesize::get_result()
 {
   return result;
 }

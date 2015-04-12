@@ -1,7 +1,11 @@
 #ifndef SYNTHESIZE_H
 #define SYNTHESIZE_H
 
+#include <vector>
 #include <algorithm>
+#include <random>
+
+#include "filter.h"
 
 using namespace std;
 
@@ -9,7 +13,7 @@ class synthesize
 {
   public:
  //   synthesize();
-    synthetize(vector<vector<double>> &predictor_coeffs, vector<double> &gains, vector<double> &lags, unsigned predictor_order, unsigned window_length);
+    synthesize(vector<vector<double>> &predictor_coeffs, vector<double> &gains, vector<double> &lags, unsigned predictor_order, unsigned window_length);
     ~synthesize();
 
 /*    unsigned get_predictor_order();
