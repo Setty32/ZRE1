@@ -51,8 +51,6 @@ void synthesize::run()
 
     tmp_ptr = f.getSecondOutput();
     init.swap(*tmp_ptr);
-
-    excit.clear();
   }
 }
 
