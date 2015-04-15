@@ -1,4 +1,5 @@
 #include "filter.h"
+#include <iostream>
 
 filter::filter()
 {
@@ -16,7 +17,7 @@ std::vector<double> * filter::getFirstOutput(){
 }
 
 std::vector<double> * filter::getSecondOutput(){
-    return &output2;
+    return zi;
 }
 
 void filter::doFilter(){
@@ -24,26 +25,23 @@ void filter::doFilter(){
     if(zi->size() != n){
         zi->resize(n);
     }
+//    for(unsigned i = 0; i < zi->size(); i++){
+//        zi->at(i) = 0;
+//    }
 
-    zi->at(n-1) = 0;
-
-    for (unsigned i = 0; i < b->size(); i++) {
-        b->at(i) = b->at(i) / b->at(0);
-        a->at(i) = a->at(i) / a->at(0);
-    }
+//    for (unsigned i = 0; i < b->size(); i++) {
+//        b->at(i) = b->at(i) / b->at(0);
+//    }
+//    for(unsigned i = 0; i < a->size(); i++){
+//        a->at(i) = a->at(i) / a->at(0);
+//    }
 
     output1.clear();
     output1.resize(input->size());
-    for(unsigned i = 0; i < input->size(); i++){
+    for(unsigned i = 0; i < output1.size(); i++){
         output1.at(i) = b->at(0) * input->at(i) + zi->at(0);
         for (unsigned j = 1; j < n; j++) {
-            zi->at(j - 1) = b->at(j) * input->at(i) + zi->at(j) - a->at(j) * output1.at(i);
+            zi->at(j - 1) = zi->at(j) - a->at(j) * output1.at(i);
         }
-    }
-
-    output2.clear();
-    output2.resize(zi->size() - 1);
-    for (unsigned i = 0; i < zi->size() - 1; i++) {
-        output2.at(i) = zi->at(i);
     }
 }
